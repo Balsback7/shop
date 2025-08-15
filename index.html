@@ -1,70 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Quaryr's File Shop</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 40px; }
-    .shop-item { margin-bottom: 30px; }
-    .selector, .steps { margin-top: 20px; }
-    button { margin-right: 10px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quaryr's File Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
+        }
+        .chat-message {
+            max-width: 75%;
+            word-break: break-word;
+        }
+        .chat-image {
+            max-width: 200px;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+    </style>
 </head>
-<body>
-  <h1>Quaryr's File Shop</h1>
-  <div class="shop-item">
-    <h2>Baddies Modded Kit - $5</h2>
-    <button onclick="showSelector('Baddies Modded Kit')">Buy</button>
-  </div>
-  <div class="shop-item">
-    <h2>Fully Scripted Baddies Modded Game - $20</h2>
-    <button onclick="showSelector('Fully Scripted Baddies Modded Game')">Buy</button>
-  </div>
-  <div id="selector" class="selector"></div>
-  <div id="steps" class="steps"></div>
+<body class="min-h-screen text-white font-sans">
+    <div class="container mx-auto p-6 max-w-4xl">
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-4xl font-bold text-cyan-400">Quaryr's File Shop</h1>
+            <button id="messagesTab" class="bg-cyan-500 text-black px-4 py-2 rounded-lg hover:bg-cyan-600 transition">Messages</button>
+        </header>
 
-  <script>
-    function showSelector(item) {
-      document.getElementById('steps').innerHTML = '';
-      document.getElementById('selector').innerHTML = `
-        <h3>Choose payment method for "${item}":</h3>
-        <button onclick="showSteps('robuxGift')">Buy with Robux Gift</button>
-        <button onclick="showSteps('robuxCard')">Buy with Robux Gift Card</button>
-        <button onclick="showSteps('doordash')">Buy with DoorDash Gift Card</button>
-        <button onclick="showSteps('ebay')">Buy with eBay Gift Card</button>
-      `;
-    }
+        <!-- Shop Items -->
+        <div id="shopSection" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-cyan-500/50 transition">
+                <h2 class="text-2xl font-semibold text-cyan-300">Baddies Modded Kit</h2>
+                <p class="text-gray-300 mt-2">Price: $5</p>
+                <button onclick="selectPayment('Baddies Modded Kit - $5')" class="mt-4 bg-cyan-500 text-black px-6 py-2 rounded-lg hover:bg-cyan-600 transition">Buy</button>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-cyan-500/50 transition">
+                <h2 class="text-2xl font-semibold text-cyan-300">Fully Scripted Baddies Modded Game</h2>
+                <p class="text-gray-300 mt-2">Price: $20</p>
+                <button onclick="selectPayment('Fully Scripted Baddies Modded Game - $20')" class="mt-4 bg-cyan-500 text-black px-6 py-2 rounded-lg hover:bg-cyan-600 transition">Buy</button>
+            </div>
+        </div>
 
-    function showSteps(method) {
-      let url = '';
-      let label = '';
-      switch (method) {
-        case 'robuxGift':
-          url = 'https://www.roblox.com/gift-robux?user=8591674609';
-          label = 'Robux Gift';
-          break;
-        case 'robuxCard':
-          url = 'https://www.roblox.com/shopgiftcards?location=us&locale=en_us';
-          label = 'Robux Gift Card';
-          break;
-        case 'doordash':
-          url = 'https://www.doordash.com/consumer/gift-cards/?from_menu_link=true&srsltid=AfmBOoo4nM4LWuVgu18mr3puUielz8_xcRSbVgC3xsuJNHykToIk04kr';
-          label = 'DoorDash Gift Card';
-          break;
-        case 'ebay':
-          url = 'https://ebay.launchgiftcards.com/?purchaseAttemptId=408775753729&card_id=6815&category_id=13';
-          label = 'eBay Gift Card';
-          break;
-      }
-      document.getElementById('steps').innerHTML = `
-        <h3>Steps to buy with ${label}:</h3>
-        <ol>
-          <li>Go to the site to get the gift card or gift: <a href="${url}" target="_blank">${url}</a></li>
-          <li>Follow the instructions on the site to purchase your gift card or gift.</li>
-          <li>Send proof of purchase to the shop owner to receive your files.</li>
-        </ol>
-      `;
-    }
-  </script>
+        <!-- Payment Selector -->
+        <div id="paymentSelector" class="hidden mt-8 bg-gray-800 p-6 rounded-xl shadow-lg">
+            <h2 id="selectedItem" class="text-2xl font-semibold text-cyan-300"></h2>
+            <p class="text-gray-300 mt-2">Select a payment method:</p>
+            <select id="paymentMethod" class="mt-4 p-2 bg-gray-700 text-white rounded-lg w-full">
+                <option value="">-- Choose an option --</option>
+                <option value="robux_gift">Buy with Robux (Gift)</option>
+                <option value="robux_card">Buy with Robux Gift Card</option>
+                <option value="doordash">Buy with DoorDash Gift Card</option>
+                <option value="ebay">Buy with eBay Gift Card</option>
+            </select>
+            <button onclick="showSteps()" class="mt-4 bg-cyan-500 text-black px-6 py-2 rounded-lg hover:bg-cyan-600 transition">Continue</button>
+        </div>
+
+        <!-- Payment Instructions -->
+        <div id="paymentSteps" class="hidden mt-8 bg-gray-800 p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl font-semibold text-cyan-300">Payment Instructions</h2>
+            <p class="text-gray-300 mt-2">1️⃣ Go to the site to get the gift card or gift:</p>
+            <p><a id="paymentLink" href="#" target="_blank" class="text-cyan-400 hover:underline">Click here</a></p>
+            <p class="text-gray-300 mt-2">2️⃣ After payment, you can access the chat below.</p>
+        </div>
+
+        <!-- Chat Section (Hidden until purchase) -->
+        <div id="chatSection" class="hidden mt-8 bg-gray-800 p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl font-semibold text-cyan-300">Chat with Support</h2>
+            <div id="chatMessages" class="mt-4 h-64 overflow-y-auto bg-gray-900 p-4 rounded-lg"></div>
+            <div class="mt-4 flex flex-col gap-2">
+                <textarea id="chatInput" class="p-2 bg-gray-700 text-white rounded-lg w-full" placeholder="Type your message..."></textarea>
+                <input type="file" id="imageInput" accept="image/*" class="text-gray-300">
+                <button onclick="sendMessage()" class="bg-cyan-500 text-black px-6 py-2 rounded-lg hover:bg-cyan-600 transition">Send</button>
+            </div>
+        </div>
+
+        <!-- Admin Messages Section (Hidden until unlocked) -->
+        <div id="adminMessages" class="hidden mt-8 bg-gray-800 p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl font-semibold text-cyan-300">Admin Messages</h2>
+            <div id="adminChatMessages" class="mt-4 h-64 overflow-y-auto bg-gray-900 p-4 rounded-lg"></div>
+            <textarea id="adminChatInput" class="mt-4 p-2 bg-gray-700 text-white rounded-lg w-full" placeholder="Type your response..."></textarea>
+            <button onclick="sendAdminMessage()" class="mt-2 bg-cyan-500 text-black px-6 py-2 rounded-lg hover:bg-cyan-600 transition">Send</button>
+        </div>
+    </div>
+
+    <script>
+        let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+
+        function selectPayment(item) {
+            document.getElementById('selectedItem').textContent = item;
+            document.getElementById('paymentSelector').classList.remove('hidden');
+            document.getElementById('paymentSteps').classList.add('hidden');
+            document.getElementById('chatSection').classList.add('hidden');
+        }
+
+        function showSteps() {
+            const method = document.getElementById('paymentMethod').value;
+            const linkElement = document.getElementById('paymentLink');
+            let link = '#';
+
+            switch (method) {
+                case 'robux_gift':
+                    link = 'https://www.roblox.com/gift-robux?user=8591674609';
+                    break;
+                case 'robux_card':
+                    link = 'https://www.roblox.com/shopgiftcards?location=us&locale=en_us';
+                    break;
+                case 'doordash':
+                    link = 'https://www.doordash.com/consumer/gift-cards/';
+                    break;
+                case 'ebay':
+                    link = 'https://ebay.launchgiftcards.com/';
+                    break;
+                default:
+                    alert('Please select a payment method.');
+                    return;
+            }
+
+            linkElement.href = link;
+            document.getElementById('paymentSteps').classList.remove('hidden');
+            document.getElementById('chatSection').classList.remove('hidden');
+            loadMessages();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const imageInput = document.getElementById('imageInput');
+            const messageText = input.value.trim();
+            const imageFile = imageInput.files[0];
+
+            if (messageText || imageFile) {
+                const message = {
+                    sender: 'user',
+                    text: messageText,
+                    timestamp: new Date().toLocaleString(),
+                };
+
+                if (imageFile) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        message.image = e.target.result;
+                        messages.push(message);
+                        localStorage.setItem('chatMessages', JSON.stringify(messages));
+                        loadMessages();
+                    };
+                    reader.readAsDataURL(imageFile);
+                } else {
+                    messages.push(message);
+                    localStorage.setItem('chatMessages', JSON.stringify(messages));
+                    loadMessages();
+                }
+
+                input.value = '';
+                imageInput.value = '';
+            }
+        }
+
+        function sendAdminMessage() {
+            const input = document.getElementById('adminChatInput');
+            const messageText = input.value.trim();
+
+            if (messageText) {
+                messages.push({
+                    sender: 'admin',
+                    text: messageText,
+                    timestamp: new Date().toLocaleString(),
+                });
+                localStorage.setItem('chatMessages', JSON.stringify(messages));
+                loadMessages();
+                input.value = '';
+            }
+        }
+
+        function loadMessages() {
+            const chatMessages = document.getElementById('chatMessages');
+            const adminChatMessages = document.getElementById('adminChatMessages');
+            chatMessages.innerHTML = '';
+            adminChatMessages.innerHTML = '';
+
+            messages.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message p-2 mb-2 rounded-lg ${msg.sender === 'user' ? 'bg-cyan-600 ml-auto text-right' : 'bg-gray-700 mr-auto'}`;
+                messageDiv.innerHTML = `<p class="text-sm">${msg.text}</p><small class="text-gray-400">${msg.timestamp}</small>`;
+                if (msg.image) {
+                    messageDiv.innerHTML += `<img src="${msg.image}" class="chat-image" />`;
+                }
+                chatMessages.appendChild(messageDiv);
+                adminChatMessages.appendChild(messageDiv.cloneNode(true));
+            });
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            adminChatMessages.scrollTop = adminChatMessages.scrollHeight;
+        }
+
+        document.getElementById('messagesTab').addEventListener('click', () => {
+            const key = prompt('Enter admin key:');
+            if (key === 'Kakamar55') {
+                document.getElementById('shopSection').classList.add('hidden');
+                document.getElementById('paymentSelector').classList.add('hidden');
+                document.getElementById('paymentSteps').classList.add('hidden');
+                document.getElementById('chatSection').classList.add('hidden');
+                document.getElementById('adminMessages').classList.remove('hidden');
+                loadMessages();
+            } else {
+                alert('Invalid key.');
+            }
+        });
+    </script>
 </body>
 </html>
