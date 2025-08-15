@@ -12,9 +12,10 @@
         .chat-message {
             max-width: 75%;
             word-break: break-word;
+            font-size: 0.75rem; /* Smaller chat messages */
         }
         .chat-image {
-            max-width: 200px;
+            max-width: 150px; /* Smaller images in chat */
             border-radius: 8px;
             margin-top: 8px;
         }
@@ -33,112 +34,146 @@
             color: white;
             padding: 2px 6px;
             border-radius: 4px;
-            font-size: 0.75rem;
+            font-size: 0.6rem;
             margin-left: 4px;
+        }
+        #sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        #sidebar.hidden {
+            transform: translateX(-100%);
         }
     </style>
 </head>
 <body class="min-h-screen text-white font-sans">
-    <div class="container mx-auto p-6 max-w-4xl">
-        <header class="flex justify-between items-center mb-8">
-            <h1 class="text-4xl font-bold text-blue-700">Quaryr's File Shop</h1>
-            <div class="relative">
-                <button id="messagesTab" class="bg-blue-700 text-black px-4 py-2 rounded-lg hover:bg-blue-800 transition">Messages</button>
-                <span id="notificationDot" class="notification-dot"></span>
-            </div>
-        </header>
-
-        <!-- Login/Signup Section -->
-        <div id="authSection" class="bg-black p-6 rounded-xl shadow-lg border border-blue-700">
-            <h2 id="authTitle" class="text-2xl font-semibold text-blue-600">Login</h2>
-            <div class="mt-4">
-                <input id="username" type="text" placeholder="Username" class="p-2 bg-black text-white rounded-lg w-full mb-2 border border-blue-700">
-                <input id="password" type="password" placeholder="Password (6+ letters, 1+ number)" class="p-2 bg-black text-white rounded-lg w-full mb-2 border border-blue-700">
-                <button id="authButton" onclick="handleAuth()" class="bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Login</button>
-                <button id="toggleAuth" onclick="toggleAuthMode()" class="ml-2 text-blue-600 hover:underline">Sign Up</button>
-            </div>
+    <div class="flex">
+        <!-- Sidebar -->
+        <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-black p-4 border-r border-blue-700 hidden">
+            <button id="closeSidebar" class="text-blue-600 hover:text-blue-800 mb-4">Close</button>
+            <h2 class="text-xl font-semibold text-blue-600">Menu</h2>
+            <ul class="mt-4">
+                <li><button id="settingsLink" class="text-blue-600 hover:underline">Settings</button></li>
+                <li><button id="approvalLink" class="text-blue-600 hover:underline">Check Approval</button></li>
+            </ul>
         </div>
 
-        <!-- Shop Items -->
-        <div id="shopSection" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-            <div class="bg-black p-6 rounded-xl shadow-lg border border-blue-700 hover:shadow-blue-700/50 transition">
-                <h2 class="text-2xl font-semibold text-blue-600">Baddies Modded Kit</h2>
-                <p class="text-gray-300 mt-2">Price: $5</p>
-                <button onclick="selectPayment('Baddies Modded Kit - $5')" class="mt-4 bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Buy</button>
-            </div>
-            <div class="bg-black p-6 rounded-xl shadow-lg border border-blue-700 hover:shadow-blue-700/50 transition">
-                <h2 class="text-2xl font-semibold text-blue-600">Fully Scripted Baddies Modded Game</h2>
-                <p class="text-gray-300 mt-2">Price: $20</p>
-                <button onclick="selectPayment('Fully Scripted Baddies Modded Game - $20')" class="mt-4 bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Buy</button>
-            </div>
-        </div>
-
-        <!-- Payment Selector -->
-        <div id="paymentSelector" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
-            <h2 id="selectedItem" class="text-2xl font-semibold text-blue-600"></h2>
-            <p class="text-gray-300 mt-2">Select a payment method:</p>
-            <select id="paymentMethod" class="mt-4 p-2 bg-black text-white rounded-lg w-full border border-blue-700">
-                <option value="">-- Choose an option --</option>
-                <option value="robux_gift">Buy with Robux (Gift)</option>
-                <option value="robux_card">Buy with Robux Gift Card</option>
-                <option value="doordash">Buy with DoorDash Gift Card</option>
-                <option value="ebay">Buy with eBay Gift Card</option>
-            </select>
-            <button onclick="showSteps()" class="mt-4 bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Continue</button>
-        </div>
-
-        <!-- Payment Instructions -->
-        <div id="paymentSteps" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
-            <h2 class="text-2xl font-semibold text-blue-600">Payment Instructions</h2>
-            <p class="text-gray-300 mt-2">1️⃣ Go to the site to get the gift card or gift:</p>
-            <p><a id="paymentLink" href="#" target="_blank" class="text-blue-600 hover:underline">Click here</a></p>
-            <p class="text-gray-300 mt-2">2️⃣ After payment, submit your verification below.</p>
-        </div>
-
-        <!-- Verification Form -->
-        <div id="verificationForm" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
-            <h2 class="text-2xl font-semibold text-blue-600">Verification</h2>
-            <p class="text-gray-300 mt-2">Please enter your gift card code and/or a picture of the gift receipt.</p>
-            <input id="giftCode" type="text" placeholder="Gift Card Code" class="p-2 bg-black text-white rounded-lg w-full mb-2 border border-blue-700">
-            <input type="file" id="receiptImage" accept="image/*" class="text-gray-300 mb-2">
-            <button onclick="submitVerification()" class="bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Submit</button>
-        </div>
-
-        <!-- Waiting Message -->
-        <div id="waitingMessage" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
-            <h2 class="text-2xl font-semibold text-blue-600">Waiting for Verification</h2>
-            <p class="text-gray-300 mt-2">Your submission is pending. Please wait for staff approval. Refresh the page to check status.</p>
-        </div>
-
-        <!-- Chat Section (Hidden until verified) -->
-        <div id="chatSection" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
-            <h2 class="text-2xl font-semibold text-blue-600">Chat with Support</h2>
-            <div id="chatMessages" class="mt-4 h-64 overflow-y-auto bg-black p-4 rounded-lg border border-blue-700"></div>
-            <div class="mt-4 flex flex-col gap-2">
-                <textarea id="chatInput" class="p-2 bg-black text-white rounded-lg w-full border border-blue-700" placeholder="Type your message..."></textarea>
-                <input type="file" id="imageInput" accept="image/*" class="text-gray-300">
-                <button onclick="sendMessage()" class="bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Send</button>
-            </div>
-        </div>
-
-        <!-- Admin Messages Section (Hidden until unlocked) -->
-        <div id="adminMessages" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
-            <h2 class="text-2xl font-semibold text-blue-600">Admin Messages</h2>
-            <div id="verificationsSection" class="mt-4 bg-black p-4 rounded-lg border border-blue-700">
-                <h3 class="text-lg font-semibold text-blue-600">Pending Verifications</h3>
-                <ul id="verificationList" class="mt-2"></ul>
-            </div>
-            <div class="flex mt-4">
-                <div class="w-1/3 bg-black p-4 rounded-lg mr-4 overflow-y-auto h-64 border border-blue-700">
-                    <h3 class="text-lg font-semibold text-blue-600">Chats</h3>
-                    <ul id="chatList" class="mt-2"></ul>
+        <!-- Main Content -->
+        <div class="container mx-auto p-6 max-w-4xl flex-1">
+            <header class="flex justify-between items-center mb-8">
+                <button id="toggleSidebar" class="text-blue-600 text-2xl">☰</button>
+                <h1 class="text-4xl font-bold text-blue-700">Quaryr's File Shop</h1>
+                <div class="relative">
+                    <button id="messagesTab" class="bg-blue-700 text-black px-4 py-2 rounded-lg hover:bg-blue-800 transition">Messages</button>
+                    <span id="notificationDot" class="notification-dot"></span>
                 </div>
-                <div class="w-2/3">
-                    <div id="adminChatMessages" class="h-64 overflow-y-auto bg-black p-4 rounded-lg border border-blue-700"></div>
-                    <textarea id="adminChatInput" class="mt-4 p-2 bg-black text-white rounded-lg w-full border border-blue-700" placeholder="Type your response..."></textarea>
-                    <div class="flex justify-between mt-2">
-                        <button onclick="sendAdminMessage()" class="bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Send</button>
-                        <button onclick="closeMessages()" class="bg-blue-900 text-white px-6 py-2 rounded-lg hover:bg-blue-950 transition">Close Messages</button>
+            </header>
+
+            <!-- Login/Signup Section -->
+            <div id="authSection" class="bg-black p-6 rounded-xl shadow-lg border border-blue-700">
+                <h2 id="authTitle" class="text-2xl font-semibold text-blue-600">Login</h2>
+                <div class="mt-4">
+                    <input id="username" type="text" placeholder="Username" class="p-2 bg-black text-white rounded-lg w-full mb-2 border border-blue-700">
+                    <input id="password" type="password" placeholder="Password (6+ letters, 1+ number)" class="p-2 bg-black text-white rounded-lg w-full mb-2 border border-blue-700">
+                    <button id="authButton" onclick="handleAuth()" class="bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Login</button>
+                    <button id="toggleAuth" onclick="toggleAuthMode()" class="ml-2 text-blue-600 hover:underline">Sign Up</button>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settingsSection" class="hidden bg-black p-6 rounded-xl shadow-lg border border-blue-700 mt-8">
+                <h2 class="text-2xl font-semibold text-blue-600">Settings</h2>
+                <div class="mt-4">
+                    <button onclick="logout()" class="bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Log Out</button>
+                </div>
+            </div>
+
+            <!-- Approval Status Section -->
+            <div id="approvalSection" class="hidden bg-black p-6 rounded-xl shadow-lg border border-blue-700 mt-8">
+                <h2 class="text-2xl font-semibold text-blue-600">Approval Status</h2>
+                <p id="approvalStatus" class="text-gray-300 mt-2">Checking...</p>
+            </div>
+
+            <!-- Shop Items -->
+            <div id="shopSection" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                <div class="bg-black p-6 rounded-xl shadow-lg border border-blue-700 hover:shadow-blue-700/50 transition">
+                    <h2 class="text-2xl font-semibold text-blue-600">Baddies Modded Kit</h2>
+                    <p class="text-gray-300 mt-2">Price: $5</p>
+                    <button onclick="selectPayment('Baddies Modded Kit - $5')" class="mt-4 bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Buy</button>
+                </div>
+                <div class="bg-black p-6 rounded-xl shadow-lg border border-blue-700 hover:shadow-blue-700/50 transition">
+                    <h2 class="text-2xl font-semibold text-blue-600">Fully Scripted Baddies Modded Game</h2>
+                    <p class="text-gray-300 mt-2">Price: $20</p>
+                    <button onclick="selectPayment('Fully Scripted Baddies Modded Game - $20')" class="mt-4 bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Buy</button>
+                </div>
+            </div>
+
+            <!-- Payment Selector -->
+            <div id="paymentSelector" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
+                <h2 id="selectedItem" class="text-2xl font-semibold text-blue-600"></h2>
+                <p class="text-gray-300 mt-2">Select a payment method:</p>
+                <select id="paymentMethod" class="mt-4 p-2 bg-black text-white rounded-lg w-full border border-blue-700">
+                    <option value="">-- Choose an option --</option>
+                    <option value="robux_gift">Buy with Robux (Gift)</option>
+                    <option value="robux_card">Buy with Robux Gift Card</option>
+                    <option value="doordash">Buy with DoorDash Gift Card</option>
+                    <option value="ebay">Buy with eBay Gift Card</option>
+                </select>
+                <button onclick="showSteps()" class="mt-4 bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Continue</button>
+            </div>
+
+            <!-- Payment Instructions -->
+            <div id="paymentSteps" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
+                <h2 class="text-2xl font-semibold text-blue-600">Payment Instructions</h2>
+                <p class="text-gray-300 mt-2">1️⃣ Go to the site to get the gift card or gift:</p>
+                <p><a id="paymentLink" href="#" target="_blank" class="text-blue-600 hover:underline">Click here</a></p>
+                <p class="text-gray-300 mt-2">2️⃣ After payment, submit your verification below.</p>
+            </div>
+
+            <!-- Verification Form -->
+            <div id="verificationForm" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
+                <h2 class="text-2xl font-semibold text-blue-600">Verification</h2>
+                <p class="text-gray-300 mt-2">Please enter your gift card code and/or a picture of the gift receipt.</p>
+                <input id="giftCode" type="text" placeholder="Gift Card Code" class="p-2 bg-black text-white rounded-lg w-full mb-2 border border-blue-700">
+                <input type="file" id="receiptImage" accept="image/*" class="text-gray-300 mb-2">
+                <button onclick="submitVerification()" class="bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Submit</button>
+            </div>
+
+            <!-- Waiting Message -->
+            <div id="waitingMessage" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
+                <h2 class="text-2xl font-semibold text-blue-600">Waiting for Verification</h2>
+                <p class="text-gray-300 mt-2">Your submission is pending. Please wait for staff approval. Check status in the sidebar.</p>
+            </div>
+
+            <!-- Chat Section (Hidden until verified) -->
+            <div id="chatSection" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
+                <h2 class="text-2xl font-semibold text-blue-600">Chat with Support</h2>
+                <div id="chatMessages" class="mt-4 h-64 overflow-y-auto bg-black p-4 rounded-lg border border-blue-700"></div>
+                <div class="mt-4 flex flex-col gap-2">
+                    <textarea id="chatInput" class="p-2 bg-black text-white rounded-lg w-full border border-blue-700" placeholder="Type your message..."></textarea>
+                    <input type="file" id="imageInput" accept="image/*" class="text-gray-300">
+                    <button onclick="sendMessage()" class="bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Send</button>
+                </div>
+            </div>
+
+            <!-- Admin Messages Section (Hidden until unlocked) -->
+            <div id="adminMessages" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
+                <h2 class="text-2xl font-semibold text-blue-600">Admin Messages</h2>
+                <div id="verificationsSection" class="mt-4 bg-black p-4 rounded-lg border border-blue-700">
+                    <h3 class="text-lg font-semibold text-blue-600">Pending Verifications</h3>
+                    <ul id="verificationList" class="mt-2"></ul>
+                </div>
+                <div class="flex mt-4">
+                    <div class="w-1/3 bg-black p-4 rounded-lg mr-4 overflow-y-auto h-64 border border-blue-700">
+                        <h3 class="text-lg font-semibold text-blue-600">Chats</h3>
+                        <ul id="chatList" class="mt-2"></ul>
+                    </div>
+                    <div class="w-2/3">
+                        <div id="adminChatMessages" class="h-64 overflow-y-auto bg-black p-4 rounded-lg border border-blue-700"></div>
+                        <textarea id="adminChatInput" class="mt-4 p-2 bg-black text-white rounded-lg w-full border border-blue-700" placeholder="Type your response..."></textarea>
+                        <div class="flex justify-between mt-2">
+                            <button onclick="sendAdminMessage()" class="bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Send</button>
+                            <button onclick="closeMessages()" class="bg-blue-900 text-white px-6 py-2 rounded-lg hover:bg-blue-950 transition">Close Messages</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -157,6 +192,7 @@
         if (currentUser && users[currentUser]) {
             document.getElementById('authSection').classList.add('hidden');
             document.getElementById('shopSection').classList.remove('hidden');
+            checkVerificationStatus();
         }
 
         function handleAuth() {
@@ -192,6 +228,7 @@
                     localStorage.setItem('currentUser', currentUser);
                     document.getElementById('authSection').classList.add('hidden');
                     document.getElementById('shopSection').classList.remove('hidden');
+                    checkVerificationStatus();
                 } else {
                     alert('Invalid username or password.');
                 }
@@ -205,6 +242,20 @@
             document.getElementById('toggleAuth').textContent = isSignup ? 'Sign Up' : 'Login';
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            document.getElementById('settingsSection').classList.add('hidden');
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('shopSection').classList.add('hidden');
+            document.getElementById('paymentSelector').classList.add('hidden');
+            document.getElementById('paymentSteps').classList.add('hidden');
+            document.getElementById('verificationForm').classList.add('hidden');
+            document.getElementById('waitingMessage').classList.add('hidden');
+            document.getElementById('chatSection').classList.add('hidden');
+            document.getElementById('sidebar').classList.add('hidden');
         }
 
         function selectPayment(item) {
@@ -350,12 +401,12 @@
                 messages[currentUser].forEach(msg => {
                     const messageDiv = document.createElement('div');
                     messageDiv.className = `chat-message p-2 mb-2 rounded-lg ${msg.sender === currentUser ? 'bg-blue-700 ml-auto text-right' : 'bg-gray-700 mr-auto'}`;
-                    let senderHtml = `<p class="text-sm font-semibold">${msg.sender}`;
+                    let senderHtml = `<p class="text-xs font-semibold">${msg.sender}`;
                     if (msg.sender === 'admin') {
                         senderHtml += `<span class="staff-tag">Staff</span>`;
                     }
                     senderHtml += `</p>`;
-                    messageDiv.innerHTML = senderHtml + `<p class="text-sm">${msg.text}</p><small class="text-gray-400">${msg.timestamp}</small>`;
+                    messageDiv.innerHTML = senderHtml + `<p class="text-xs">${msg.text}</p><small class="text-gray-400 text-[0.6rem]">${msg.timestamp}</small>`;
                     if (msg.image) {
                         messageDiv.innerHTML += `<img src="${msg.image}" class="chat-image" />`;
                     }
@@ -387,13 +438,13 @@
             Object.keys(verifications).forEach(username => {
                 if (verifications[username].status === 'pending') {
                     const li = document.createElement('li');
-                    li.className = 'p-2 bg-gray-800 rounded mb-2';
+                    li.className = 'p-2 bg-black rounded mb-2 border border-blue-700';
                     li.innerHTML = `<p><strong>${username}</strong></p>`;
                     if (verifications[username].code) {
                         li.innerHTML += `<p>Code: ${verifications[username].code}</p>`;
                     }
                     if (verifications[username].image) {
-                        li.innerHTML += `<img src="${verifications[username].image}" class="max-w-200" alt="Receipt" />`;
+                        li.innerHTML += `<img src="${verifications[username].image}" class="max-w-150" alt="Receipt" />`;
                     }
                     li.innerHTML += `<div class="mt-2"><button onclick="acceptVerification('${username}')" class="bg-green-600 text-white px-4 py-1 rounded mr-2">Accept</button><button onclick="denyVerification('${username}')" class="bg-red-600 text-white px-4 py-1 rounded">Deny</button></div>`;
                     verificationList.appendChild(li);
@@ -404,12 +455,12 @@
                 messages[currentChatUser].forEach(msg => {
                     const messageDiv = document.createElement('div');
                     messageDiv.className = `chat-message p-2 mb-2 rounded-lg ${msg.sender === 'admin' ? 'bg-blue-700 ml-auto text-right' : 'bg-gray-700 mr-auto'}`;
-                    let senderHtml = `<p class="text-sm font-semibold">${msg.sender}`;
+                    let senderHtml = `<p class="text-xs font-semibold">${msg.sender}`;
                     if (msg.sender === 'admin') {
                         senderHtml += `<span class="staff-tag">Staff</span>`;
                     }
                     senderHtml += `</p>`;
-                    messageDiv.innerHTML = senderHtml + `<p class="text-sm">${msg.text}</p><small class="text-gray-400">${msg.timestamp}</small>`;
+                    messageDiv.innerHTML = senderHtml + `<p class="text-xs">${msg.text}</p><small class="text-gray-400 text-[0.6rem]">${msg.timestamp}</small>`;
                     if (msg.image) {
                         messageDiv.innerHTML += `<img src="${msg.image}" class="chat-image" />`;
                     }
@@ -446,6 +497,8 @@
                 timestamp: new Date().toLocaleString(),
             });
             localStorage.setItem('chatMessages', JSON.stringify(messages));
+            hasNewMessages = true;
+            document.getElementById('notificationDot').style.display = 'block';
             loadAdminMessages();
         }
 
@@ -472,11 +525,52 @@
                 document.getElementById('verificationForm').classList.add('hidden');
                 document.getElementById('waitingMessage').classList.add('hidden');
                 document.getElementById('chatSection').classList.add('hidden');
+                document.getElementById('settingsSection').classList.add('hidden');
+                document.getElementById('approvalSection').classList.add('hidden');
                 document.getElementById('adminMessages').classList.remove('hidden');
+                document.getElementById('sidebar').classList.add('hidden');
                 loadAdminMessages();
             } else {
                 alert('Invalid key.');
             }
+        });
+
+        document.getElementById('toggleSidebar').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('hidden');
+        });
+
+        document.getElementById('closeSidebar').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.add('hidden');
+        });
+
+        document.getElementById('settingsLink').addEventListener('click', () => {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('shopSection').classList.add('hidden');
+            document.getElementById('paymentSelector').classList.add('hidden');
+            document.getElementById('paymentSteps').classList.add('hidden');
+            document.getElementById('verificationForm').classList.add('hidden');
+            document.getElementById('waitingMessage').classList.add('hidden');
+            document.getElementById('chatSection').classList.add('hidden');
+            document.getElementById('adminMessages').classList.add('hidden');
+            document.getElementById('approvalSection').classList.add('hidden');
+            document.getElementById('settingsSection').classList.remove('hidden');
+            document.getElementById('sidebar').classList.add('hidden');
+        });
+
+        document.getElementById('approvalLink').addEventListener('click', () => {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('shopSection').classList.add('hidden');
+            document.getElementById('paymentSelector').classList.add('hidden');
+            document.getElementById('paymentSteps').classList.add('hidden');
+            document.getElementById('verificationForm').classList.add('hidden');
+            document.getElementById('waitingMessage').classList.add('hidden');
+            document.getElementById('chatSection').classList.add('hidden');
+            document.getElementById('adminMessages').classList.add('hidden');
+            document.getElementById('settingsSection').classList.add('hidden');
+            document.getElementById('approvalSection').classList.remove('hidden');
+            document.getElementById('sidebar').classList.add('hidden');
+            const status = verifications[currentUser]?.status || 'Not submitted';
+            document.getElementById('approvalStatus').textContent = `Your verification status: ${status.charAt(0).toUpperCase() + status.slice(1)}`;
         });
     </script>
 </body>
