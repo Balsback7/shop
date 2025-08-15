@@ -1,126 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Quaryr's File Shop</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #1e1e1e;
-        color: #fff;
-        text-align: center;
-        padding: 20px;
-    }
-    h1 {
-        color: #00ffcc;
-    }
-    .shop-item {
-        background-color: #2a2a2a;
-        padding: 15px;
-        margin: 15px auto;
-        border-radius: 10px;
-        width: 300px;
-        box-shadow: 0 0 10px #00ffcc;
-    }
-    button {
-        background-color: #00ffcc;
-        color: #000;
-        border: none;
-        padding: 10px 20px;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    button:hover {
-        background-color: #00cca3;
-    }
-    .selector, .steps {
-        margin-top: 20px;
-        display: none;
-    }
-    select {
-        padding: 8px;
-        font-size: 14px;
-        border-radius: 5px;
-    }
-    a {
-        color: #00ffcc;
-        text-decoration: none;
-    }
-    a:hover {
-        text-decoration: underline;
-    }
-</style>
+  <meta charset="UTF-8">
+  <title>Quaryr's File Shop</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 40px; }
+    .shop-item { margin-bottom: 30px; }
+    .selector, .steps { margin-top: 20px; }
+    button { margin-right: 10px; }
+  </style>
 </head>
 <body>
+  <h1>Quaryr's File Shop</h1>
+  <div class="shop-item">
+    <h2>Baddies Modded Kit - $5</h2>
+    <button onclick="showSelector('Baddies Modded Kit')">Buy</button>
+  </div>
+  <div class="shop-item">
+    <h2>Fully Scripted Baddies Modded Game - $20</h2>
+    <button onclick="showSelector('Fully Scripted Baddies Modded Game')">Buy</button>
+  </div>
+  <div id="selector" class="selector"></div>
+  <div id="steps" class="steps"></div>
 
-<h1>Quaryr's File Shop</h1>
-
-<div class="shop-item">
-    <h2>Baddies Modded Kit</h2>
-    <p>Price: $5</p>
-    <button onclick="selectPayment('Baddies Modded Kit - $5')">Buy</button>
-</div>
-
-<div class="shop-item">
-    <h2>Fully Scripted Baddies Modded Game</h2>
-    <p>Price: $20</p>
-    <button onclick="selectPayment('Fully Scripted Baddies Modded Game - $20')">Buy</button>
-</div>
-
-<div class="selector" id="paymentSelector">
-    <h2 id="selectedItem"></h2>
-    <p>Select a payment method:</p>
-    <select id="paymentMethod">
-        <option value="">-- Choose an option --</option>
-        <option value="robux_gift">Buy with Robux (Gift)</option>
-        <option value="robux_card">Buy with Robux Gift Card</option>
-        <option value="doordash">Buy with DoorDash Gift Card</option>
-        <option value="ebay">Buy with eBay Gift Card</option>
-    </select>
-    <br><br>
-    <button onclick="showSteps()">Continue</button>
-</div>
-
-<div class="steps" id="paymentSteps">
-    <h2>Payment Instructions</h2>
-    <p>1️⃣ Go to the site to get the gift card or gift:</p>
-    <p><a id="paymentLink" href="#" target="_blank">Click here</a></p>
-</div>
-
-<script>
-function selectPayment(item) {
-    document.getElementById("selectedItem").textContent = item;
-    document.getElementById("paymentSelector").style.display = "block";
-    document.getElementById("paymentSteps").style.display = "none";
-}
-
-function showSteps() {
-    const method = document.getElementById("paymentMethod").value;
-    const linkElement = document.getElementById("paymentLink");
-    let link = "#";
-
-    switch(method) {
-        case "robux_gift":
-            link = "https://www.roblox.com/gift-robux?user=8591674609";
-            break;
-        case "robux_card":
-            link = "https://www.roblox.com/shopgiftcards?location=us&locale=en_us";
-            break;
-        case "doordash":
-            link = "https://www.doordash.com/consumer/gift-cards/?from_menu_link=true&srsltid=AfmBOoo4nM4LWuVgu18mr3puUielz8_xcRSbVgC3xsuJNHykToIk04kr";
-            break;
-        case "ebay":
-            link = "https://ebay.launchgiftcards.com/?purchaseAttemptId=408775753729&card_id=6815&category_id=13";
-            break;
-        default:
-            alert("Please select a payment method.");
-            return;
+  <script>
+    function showSelector(item) {
+      document.getElementById('steps').innerHTML = '';
+      document.getElementById('selector').innerHTML = `
+        <h3>Choose payment method for "${item}":</h3>
+        <button onclick="showSteps('robuxGift')">Buy with Robux Gift</button>
+        <button onclick="showSteps('robuxCard')">Buy with Robux Gift Card</button>
+        <button onclick="showSteps('doordash')">Buy with DoorDash Gift Card</button>
+        <button onclick="showSteps('ebay')">Buy with eBay Gift Card</button>
+      `;
     }
 
-    linkElement.href = link;
-    document.getElementById("paymentSteps").style.display = "block";
-}
-</script>
-
+    function showSteps(method) {
+      let url = '';
+      let label = '';
+      switch (method) {
+        case 'robuxGift':
+          url = 'https://www.roblox.com/gift-robux?user=8591674609';
+          label = 'Robux Gift';
+          break;
+        case 'robuxCard':
+          url = 'https://www.roblox.com/shopgiftcards?location=us&locale=en_us';
+          label = 'Robux Gift Card';
+          break;
+        case 'doordash':
+          url = 'https://www.doordash.com/consumer/gift-cards/?from_menu_link=true&srsltid=AfmBOoo4nM4LWuVgu18mr3puUielz8_xcRSbVgC3xsuJNHykToIk04kr';
+          label = 'DoorDash Gift Card';
+          break;
+        case 'ebay':
+          url = 'https://ebay.launchgiftcards.com/?purchaseAttemptId=408775753729&card_id=6815&category_id=13';
+          label = 'eBay Gift Card';
+          break;
+      }
+      document.getElementById('steps').innerHTML = `
+        <h3>Steps to buy with ${label}:</h3>
+        <ol>
+          <li>Go to the site to get the gift card or gift: <a href="${url}" target="_blank">${url}</a></li>
+          <li>Follow the instructions on the site to purchase your gift card or gift.</li>
+          <li>Send proof of purchase to the shop owner to receive your files.</li>
+        </ol>
+      `;
+    }
+  </script>
 </body>
 </html>
