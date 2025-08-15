@@ -7,174 +7,364 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background: #000000; /* Pure black background */
+            background: #0a0a0a;
+            color: #f8f8f8;
+            font-family: 'Inter', sans-serif;
         }
-        .chat-message {
-            max-width: 75%;
-            word-break: break-word;
-            font-size: 0.75rem; /* Smaller chat messages */
+        .gradient-text {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
-        .chat-image {
-            max-width: 150px; /* Smaller images in chat */
-            border-radius: 8px;
-            margin-top: 8px;
+        .sidebar-item {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid #3b82f6;
+        }
+        .sidebar-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            border-left: 3px solid #3b82f6;
+        }
+        .chat-bubble {
+            max-width: 80%;
+            border-radius: 1rem;
+            padding: 0.75rem 1rem;
+        }
+        .user-bubble {
+            background: #3b82f6;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 0.25rem;
+        }
+        .admin-bubble {
+            background: #1f2937;
+            margin-right: auto;
+            border-bottom-left-radius: 0.25rem;
         }
         .notification-dot {
-            display: none;
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            width: 10px;
-            height: 10px;
-            background-color: #1e40af; /* Dark blue neon */
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
             border-radius: 50%;
-        }
-        .staff-tag {
-            background-color: #1e40af;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.6rem;
+            display: inline-block;
             margin-left: 4px;
-        }
-        #sidebar {
-            transition: transform 0.3s ease-in-out;
-        }
-        #sidebar.hidden {
-            transform: translateX(-100%);
         }
     </style>
 </head>
-<body class="min-h-screen text-white font-sans">
+<body class="min-h-screen">
     <div class="flex">
         <!-- Sidebar -->
-        <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-black p-4 border-r border-blue-700 hidden">
-            <button id="closeSidebar" class="text-blue-600 hover:text-blue-800 mb-4">Close</button>
-            <h2 class="text-xl font-semibold text-blue-600">Menu</h2>
-            <ul class="mt-4">
-                <li><button id="settingsLink" class="text-blue-600 hover:underline">Settings</button></li>
-                <li><button id="approvalLink" class="text-blue-600 hover:underline">Check Approval</button></li>
-            </ul>
+        <div class="w-64 bg-gray-900 h-screen p-4 fixed left-0 top-0 hidden md:block">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-2xl font-bold gradient-text">Quaryr's Shop</h1>
+            </div>
+            
+            <div class="space-y-1 mb-8">
+                <div id="shopLink" class="sidebar-item active p-3 rounded-lg cursor-pointer flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    Shop
+                </div>
+                <div id="chatLink" class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    Support Chat
+                </div>
+                <div id="statusLink" class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Order Status
+                </div>
+            </div>
+            
+            <div class="absolute bottom-4 left-4 right-4">
+                <div id="settingsLink" class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Settings
+                </div>
+                <button onclick="logout()" class="w-full mt-2 p-3 rounded-lg bg-gray-800 hover:bg-gray-700 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile sidebar toggle -->
+        <div class="fixed top-4 left-4 z-50 md:hidden">
+            <button id="mobileMenuButton" class="p-2 rounded-lg bg-gray-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile sidebar -->
+        <div id="mobileSidebar" class="fixed inset-0 bg-gray-900 z-40 p-4 transform -translate-x-full transition-transform duration-300 md:hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold gradient-text">Quaryr's Shop</h1>
+                <button id="closeMobileMenu" class="p-2 rounded-lg bg-gray-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="space-y-1 mb-8">
+                <div class="sidebar-item active p-3 rounded-lg cursor-pointer flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    Shop
+                </div>
+                <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    Support Chat
+                </div>
+                <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Order Status
+                </div>
+            </div>
+            
+            <div class="absolute bottom-4 left-4 right-4">
+                <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Settings
+                </div>
+                <button onclick="logout()" class="w-full mt-2 p-3 rounded-lg bg-gray-800 hover:bg-gray-700 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Logout
+                </button>
+            </div>
         </div>
 
         <!-- Main Content -->
-        <div class="container mx-auto p-6 max-w-4xl flex-1">
-            <header class="flex justify-between items-center mb-8">
-                <button id="toggleSidebar" class="text-blue-600 text-2xl">☰</button>
-                <h1 class="text-4xl font-bold text-blue-700">Quaryr's File Shop</h1>
-                <div class="relative">
-                    <button id="messagesTab" class="bg-blue-700 text-black px-4 py-2 rounded-lg hover:bg-blue-800 transition">Messages</button>
-                    <span id="notificationDot" class="notification-dot"></span>
-                </div>
-            </header>
-
+        <div class="flex-1 md:ml-64 min-h-screen">
             <!-- Login/Signup Section -->
-            <div id="authSection" class="bg-black p-6 rounded-xl shadow-lg border border-blue-700">
-                <h2 id="authTitle" class="text-2xl font-semibold text-blue-600">Login</h2>
-                <div class="mt-4">
-                    <input id="username" type="text" placeholder="Username" class="p-2 bg-black text-white rounded-lg w-full mb-2 border border-blue-700">
-                    <input id="password" type="password" placeholder="Password (6+ letters, 1+ number)" class="p-2 bg-black text-white rounded-lg w-full mb-2 border border-blue-700">
-                    <button id="authButton" onclick="handleAuth()" class="bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Login</button>
-                    <button id="toggleAuth" onclick="toggleAuthMode()" class="ml-2 text-blue-600 hover:underline">Sign Up</button>
+            <div id="authSection" class="max-w-md mx-auto p-8 mt-20 bg-gray-800 rounded-xl shadow-lg">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-bold gradient-text mb-2">Welcome Back</h1>
+                    <p class="text-gray-400">Sign in to access your account</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-300 mb-1">Username</label>
+                        <input id="username" type="text" placeholder="Enter your username" 
+                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-300 mb-1">Password</label>
+                        <input id="password" type="password" placeholder="Enter your password" 
+                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    
+                    <button id="authButton" onclick="handleAuth()" 
+                            class="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg hover:opacity-90 transition-opacity">
+                        Sign In
+                    </button>
+                    
+                    <div class="text-center text-sm text-gray-400">
+                        <span id="toggleAuthText">Don't have an account?</span>
+                        <button id="toggleAuth" onclick="toggleAuthMode()" class="ml-1 text-blue-400 hover:text-blue-300 font-medium">
+                            Sign Up
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Settings Section -->
-            <div id="settingsSection" class="hidden bg-black p-6 rounded-xl shadow-lg border border-blue-700 mt-8">
-                <h2 class="text-2xl font-semibold text-blue-600">Settings</h2>
-                <div class="mt-4">
-                    <button onclick="logout()" class="bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Log Out</button>
-                </div>
-            </div>
-
-            <!-- Approval Status Section -->
-            <div id="approvalSection" class="hidden bg-black p-6 rounded-xl shadow-lg border border-blue-700 mt-8">
-                <h2 class="text-2xl font-semibold text-blue-600">Approval Status</h2>
-                <p id="approvalStatus" class="text-gray-300 mt-2">Checking...</p>
-            </div>
-
-            <!-- Shop Items -->
-            <div id="shopSection" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                <div class="bg-black p-6 rounded-xl shadow-lg border border-blue-700 hover:shadow-blue-700/50 transition">
-                    <h2 class="text-2xl font-semibold text-blue-600">Baddies Modded Kit</h2>
-                    <p class="text-gray-300 mt-2">Price: $5</p>
-                    <button onclick="selectPayment('Baddies Modded Kit - $5')" class="mt-4 bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Buy</button>
-                </div>
-                <div class="bg-black p-6 rounded-xl shadow-lg border border-blue-700 hover:shadow-blue-700/50 transition">
-                    <h2 class="text-2xl font-semibold text-blue-600">Fully Scripted Baddies Modded Game</h2>
-                    <p class="text-gray-300 mt-2">Price: $20</p>
-                    <button onclick="selectPayment('Fully Scripted Baddies Modded Game - $20')" class="mt-4 bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Buy</button>
+            <!-- Shop Section -->
+            <div id="shopSection" class="hidden max-w-4xl mx-auto p-6">
+                <h1 class="text-3xl font-bold gradient-text mb-8">Available Products</h1>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition-colors">
+                        <h2 class="text-xl font-semibold text-white mb-2">Baddies Modded Kit</h2>
+                        <p class="text-gray-400 mb-4">Includes all the essential mods for your game</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-blue-400 font-bold">$5</span>
+                            <button onclick="selectPayment('Baddies Modded Kit - $5')" 
+                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                                Buy Now
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition-colors">
+                        <h2 class="text-xl font-semibold text-white mb-2">Fully Scripted Baddies Modded Game</h2>
+                        <p class="text-gray-400 mb-4">Complete game with all scripts included</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-blue-400 font-bold">$20</span>
+                            <button onclick="selectPayment('Fully Scripted Baddies Modded Game - $20')" 
+                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                                Buy Now
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Payment Selector -->
-            <div id="paymentSelector" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
-                <h2 id="selectedItem" class="text-2xl font-semibold text-blue-600"></h2>
-                <p class="text-gray-300 mt-2">Select a payment method:</p>
-                <select id="paymentMethod" class="mt-4 p-2 bg-black text-white rounded-lg w-full border border-blue-700">
-                    <option value="">-- Choose an option --</option>
-                    <option value="robux_gift">Buy with Robux (Gift)</option>
-                    <option value="robux_card">Buy with Robux Gift Card</option>
-                    <option value="doordash">Buy with DoorDash Gift Card</option>
-                    <option value="ebay">Buy with eBay Gift Card</option>
-                </select>
-                <button onclick="showSteps()" class="mt-4 bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Continue</button>
+            <div id="paymentSelector" class="hidden max-w-md mx-auto p-6 mt-8 bg-gray-800 rounded-xl">
+                <h2 id="selectedItem" class="text-xl font-semibold text-white mb-6"></h2>
+                
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Payment Method</label>
+                    
+                    <select id="paymentMethod" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">Select a payment method</option>
+                        <option value="robux_gift">Buy with Robux (Gift)</option>
+                        <option value="robux_card">Buy with Robux Gift Card</option>
+                        <option value="doordash">Buy with DoorDash Gift Card</option>
+                        <option value="ebay">Buy with eBay Gift Card</option>
+                    </select>
+                    
+                    <button onclick="showSteps()" 
+                            class="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg hover:opacity-90 transition-opacity mt-4">
+                        Continue
+                    </button>
+                </div>
             </div>
 
             <!-- Payment Instructions -->
-            <div id="paymentSteps" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
-                <h2 class="text-2xl font-semibold text-blue-600">Payment Instructions</h2>
-                <p class="text-gray-300 mt-2">1️⃣ Go to the site to get the gift card or gift:</p>
-                <p><a id="paymentLink" href="#" target="_blank" class="text-blue-600 hover:underline">Click here</a></p>
-                <p class="text-gray-300 mt-2">2️⃣ After payment, submit your verification below.</p>
+            <div id="paymentSteps" class="hidden max-w-md mx-auto p-6 mt-8 bg-gray-800 rounded-xl">
+                <h2 class="text-xl font-semibold text-white mb-4">Payment Instructions</h2>
+                
+                <div class="space-y-4">
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <p class="text-gray-300 mb-2">1️⃣ Go to the site to get the gift card or gift:</p>
+                        <a id="paymentLink" href="#" target="_blank" class="text-blue-400 hover:underline">Click here</a>
+                    </div>
+                    
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <p class="text-gray-300">2️⃣ After payment, submit your verification below.</p>
+                    </div>
+                </div>
             </div>
 
             <!-- Verification Form -->
-            <div id="verificationForm" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
-                <h2 class="text-2xl font-semibold text-blue-600">Verification</h2>
-                <p class="text-gray-300 mt-2">Please enter your gift card code and/or a picture of the gift receipt.</p>
-                <input id="giftCode" type="text" placeholder="Gift Card Code" class="p-2 bg-black text-white rounded-lg w-full mb-2 border border-blue-700">
-                <input type="file" id="receiptImage" accept="image/*" class="text-gray-300 mb-2">
-                <button onclick="submitVerification()" class="bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Submit</button>
+            <div id="verificationForm" class="hidden max-w-md mx-auto p-6 mt-8 bg-gray-800 rounded-xl">
+                <h2 class="text-xl font-semibold text-white mb-4">Verification</h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Gift Card Code</label>
+                        <input id="giftCode" type="text" placeholder="Enter gift card code" 
+                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Receipt Image</label>
+                        <input type="file" id="receiptImage" accept="image/*" 
+                               class="w-full text-gray-300 bg-gray-700 border border-gray-600 rounded-lg p-2">
+                    </div>
+                    
+                    <button onclick="submitVerification()" 
+                            class="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg hover:opacity-90 transition-opacity mt-2">
+                        Submit Verification
+                    </button>
+                </div>
             </div>
 
             <!-- Waiting Message -->
-            <div id="waitingMessage" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
-                <h2 class="text-2xl font-semibold text-blue-600">Waiting for Verification</h2>
-                <p class="text-gray-300 mt-2">Your submission is pending. Please wait for staff approval. Check status in the sidebar.</p>
+            <div id="waitingMessage" class="hidden max-w-md mx-auto p-6 mt-8 bg-gray-800 rounded-xl text-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                <h2 class="text-xl font-semibold text-white mb-2">Waiting for Verification</h2>
+                <p class="text-gray-400">Your submission is being reviewed. Please check back later for updates.</p>
             </div>
 
-            <!-- Chat Section (Hidden until verified) -->
-            <div id="chatSection" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
-                <h2 class="text-2xl font-semibold text-blue-600">Chat with Support</h2>
-                <div id="chatMessages" class="mt-4 h-64 overflow-y-auto bg-black p-4 rounded-lg border border-blue-700"></div>
-                <div class="mt-4 flex flex-col gap-2">
-                    <textarea id="chatInput" class="p-2 bg-black text-white rounded-lg w-full border border-blue-700" placeholder="Type your message..."></textarea>
-                    <input type="file" id="imageInput" accept="image/*" class="text-gray-300">
-                    <button onclick="sendMessage()" class="bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Send</button>
+            <!-- Chat Section -->
+            <div id="chatSection" class="hidden max-w-2xl mx-auto p-6 mt-8 bg-gray-800 rounded-xl">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold text-white">Support Chat</h2>
+                    <span class="text-sm text-gray-400">Status: <span id="chatStatus" class="text-green-400">Verified</span></span>
+                </div>
+                
+                <div id="chatMessages" class="h-96 overflow-y-auto bg-gray-700 rounded-lg p-4 mb-4 space-y-3"></div>
+                
+                <div class="space-y-2">
+                    <textarea id="chatInput" placeholder="Type your message..." 
+                              class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                    
+                    <div class="flex items-center justify-between">
+                        <input type="file" id="imageInput" accept="image/*" class="text-sm text-gray-300">
+                        
+                        <button onclick="sendMessage()" 
+                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Admin Messages Section (Hidden until unlocked) -->
-            <div id="adminMessages" class="hidden mt-8 bg-black p-6 rounded-xl shadow-lg border border-blue-700">
-                <h2 class="text-2xl font-semibold text-blue-600">Admin Messages</h2>
-                <div id="verificationsSection" class="mt-4 bg-black p-4 rounded-lg border border-blue-700">
-                    <h3 class="text-lg font-semibold text-blue-600">Pending Verifications</h3>
-                    <ul id="verificationList" class="mt-2"></ul>
+            <!-- Status Section -->
+            <div id="statusSection" class="hidden max-w-md mx-auto p-6 mt-8 bg-gray-800 rounded-xl">
+                <h2 class="text-xl font-semibold text-white mb-6">Order Status</h2>
+                
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-gray-300">Verification Status:</span>
+                        <span id="verificationStatus" class="px-3 py-1 rounded-full text-sm bg-yellow-500 text-white">Pending</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-gray-300">Order Status:</span>
+                        <span id="orderStatus" class="px-3 py-1 rounded-full text-sm bg-gray-600 text-white">Waiting verification</span>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-600">
+                        <p class="text-sm text-gray-400">Please wait 1-24 hours for staff to process your order after verification.</p>
+                    </div>
                 </div>
-                <div class="flex mt-4">
-                    <div class="w-1/3 bg-black p-4 rounded-lg mr-4 overflow-y-auto h-64 border border-blue-700">
-                        <h3 class="text-lg font-semibold text-blue-600">Chats</h3>
-                        <ul id="chatList" class="mt-2"></ul>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settingsSection" class="hidden max-w-md mx-auto p-6 mt-8 bg-gray-800 rounded-xl">
+                <h2 class="text-xl font-semibold text-white mb-6">Account Settings</h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Username</label>
+                        <input type="text" value="CurrentUser123" disabled 
+                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-400">
                     </div>
-                    <div class="w-2/3">
-                        <div id="adminChatMessages" class="h-64 overflow-y-auto bg-black p-4 rounded-lg border border-blue-700"></div>
-                        <textarea id="adminChatInput" class="mt-4 p-2 bg-black text-white rounded-lg w-full border border-blue-700" placeholder="Type your response..."></textarea>
-                        <div class="flex justify-between mt-2">
-                            <button onclick="sendAdminMessage()" class="bg-blue-700 text-black px-6 py-2 rounded-lg hover:bg-blue-800 transition">Send</button>
-                            <button onclick="closeMessages()" class="bg-blue-900 text-white px-6 py-2 rounded-lg hover:bg-blue-950 transition">Close Messages</button>
-                        </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Change Password</label>
+                        <input type="password" placeholder="New password" 
+                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-2">
+                        <input type="password" placeholder="Confirm new password" 
+                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
+                    
+                    <button onclick="logout()" 
+                            class="w-full py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors mt-4">
+                        Logout
+                    </button>
                 </div>
             </div>
         </div>
@@ -188,12 +378,30 @@
         let currentChatUser = null;
         let hasNewMessages = false;
 
-        // Auto-login if credentials exist
-        if (currentUser && users[currentUser]) {
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('shopSection').classList.remove('hidden');
-            checkVerificationStatus();
-        }
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up sidebar navigation
+            document.getElementById('shopLink').addEventListener('click', showShop);
+            document.getElementById('chatLink').addEventListener('click', showChat);
+            document.getElementById('statusLink').addEventListener('click', showStatus);
+            document.getElementById('settingsLink').addEventListener('click', showSettings);
+            
+            // Mobile menu toggle
+            document.getElementById('mobileMenuButton').addEventListener('click', function() {
+                document.getElementById('mobileSidebar').classList.remove('-translate-x-full');
+            });
+            
+            document.getElementById('closeMobileMenu').addEventListener('click', function() {
+                document.getElementById('mobileSidebar').classList.add('-translate-x-full');
+            });
+            
+            // Auto-login if credentials exist
+            if (currentUser && users[currentUser]) {
+                hideAllSections();
+                document.getElementById('shopSection').classList.remove('hidden');
+                checkVerificationStatus();
+            }
+        });
 
         function handleAuth() {
             const username = document.getElementById('username').value.trim();
@@ -226,7 +434,7 @@
                 if (users[username] && users[username].password === password) {
                     currentUser = username;
                     localStorage.setItem('currentUser', currentUser);
-                    document.getElementById('authSection').classList.add('hidden');
+                    hideAllSections();
                     document.getElementById('shopSection').classList.remove('hidden');
                     checkVerificationStatus();
                 } else {
@@ -237,25 +445,16 @@
 
         function toggleAuthMode() {
             const isSignup = document.getElementById('authButton').textContent === 'Sign Up';
-            document.getElementById('authTitle').textContent = isSignup ? 'Login' : 'Sign Up';
-            document.getElementById('authButton').textContent = isSignup ? 'Login' : 'Sign Up';
-            document.getElementById('toggleAuth').textContent = isSignup ? 'Sign Up' : 'Login';
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
+            document.getElementById('authButton').textContent = isSignup ? 'Sign In' : 'Sign Up';
+            document.getElementById('toggleAuthText').textContent = isSignup ? 'Already have an account?' : 'Don\'t have an account?';
+            document.getElementById('toggleAuth').textContent = isSignup ? 'Sign In' : 'Sign Up';
         }
 
         function logout() {
             currentUser = null;
             localStorage.removeItem('currentUser');
-            document.getElementById('settingsSection').classList.add('hidden');
+            hideAllSections();
             document.getElementById('authSection').classList.remove('hidden');
-            document.getElementById('shopSection').classList.add('hidden');
-            document.getElementById('paymentSelector').classList.add('hidden');
-            document.getElementById('paymentSteps').classList.add('hidden');
-            document.getElementById('verificationForm').classList.add('hidden');
-            document.getElementById('waitingMessage').classList.add('hidden');
-            document.getElementById('chatSection').classList.add('hidden');
-            document.getElementById('sidebar').classList.add('hidden');
         }
 
         function selectPayment(item) {
@@ -264,11 +463,8 @@
                 return;
             }
             document.getElementById('selectedItem').textContent = item;
+            hideAllSections();
             document.getElementById('paymentSelector').classList.remove('hidden');
-            document.getElementById('paymentSteps').classList.add('hidden');
-            document.getElementById('verificationForm').classList.add('hidden');
-            document.getElementById('waitingMessage').classList.add('hidden');
-            document.getElementById('chatSection').classList.add('hidden');
         }
 
         function showSteps() {
@@ -295,21 +491,35 @@
             }
 
             linkElement.href = link;
+            hideAllSections();
             document.getElementById('paymentSteps').classList.remove('hidden');
-            checkVerificationStatus();
         }
 
         function checkVerificationStatus() {
+            if (!currentUser) return;
+            
             if (verifications[currentUser] && verifications[currentUser].status === 'accepted') {
-                document.getElementById('chatSection').classList.remove('hidden');
+                document.getElementById('chatStatus').textContent = 'Verified';
+                document.getElementById('chatStatus').className = 'text-green-400';
+                document.getElementById('verificationStatus').textContent = 'Approved';
+                document.getElementById('verificationStatus').className = 'px-3 py-1 rounded-full text-sm bg-green-500 text-white';
+                document.getElementById('orderStatus').textContent = 'Processing';
+                document.getElementById('orderStatus').className = 'px-3 py-1 rounded-full text-sm bg-blue-500 text-white';
+                
                 if (!messages[currentUser]) {
                     messages[currentUser] = [];
                 }
                 loadMessages();
             } else if (verifications[currentUser] && verifications[currentUser].status === 'pending') {
+                hideAllSections();
                 document.getElementById('waitingMessage').classList.remove('hidden');
+                document.getElementById('verificationStatus').textContent = 'Pending';
+                document.getElementById('verificationStatus').className = 'px-3 py-1 rounded-full text-sm bg-yellow-500 text-white';
             } else {
+                hideAllSections();
                 document.getElementById('verificationForm').classList.remove('hidden');
+                document.getElementById('verificationStatus').textContent = 'Not submitted';
+                document.getElementById('verificationStatus').className = 'px-3 py-1 rounded-full text-sm bg-gray-500 text-white';
             }
         }
 
@@ -327,19 +537,22 @@
                 reader.onload = function(e) {
                     verifications[currentUser].image = e.target.result;
                     localStorage.setItem('verifications', JSON.stringify(verifications));
-                    document.getElementById('verificationForm').classList.add('hidden');
+                    hideAllSections();
                     document.getElementById('waitingMessage').classList.remove('hidden');
+                    checkVerificationStatus();
                 };
                 reader.readAsDataURL(imageFile);
             } else {
                 localStorage.setItem('verifications', JSON.stringify(verifications));
-                document.getElementById('verificationForm').classList.add('hidden');
+                hideAllSections();
                 document.getElementById('waitingMessage').classList.remove('hidden');
+                checkVerificationStatus();
             }
         }
 
         function sendMessage() {
-            if (verifications[currentUser].status !== 'accepted') return;
+            if (!verifications[currentUser] || verifications[currentUser].status !== 'accepted') return;
+            
             const input = document.getElementById('chatInput');
             const imageInput = document.getElementById('imageInput');
             const messageText = input.value.trim();
@@ -349,7 +562,7 @@
                 const message = {
                     sender: currentUser,
                     text: messageText,
-                    timestamp: new Date().toLocaleString(),
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 };
 
                 if (imageFile) {
@@ -359,7 +572,6 @@
                         messages[currentUser].push(message);
                         localStorage.setItem('chatMessages', JSON.stringify(messages));
                         hasNewMessages = true;
-                        document.getElementById('notificationDot').style.display = 'block';
                         loadMessages();
                     };
                     reader.readAsDataURL(imageFile);
@@ -367,29 +579,11 @@
                     messages[currentUser].push(message);
                     localStorage.setItem('chatMessages', JSON.stringify(messages));
                     hasNewMessages = true;
-                    document.getElementById('notificationDot').style.display = 'block';
                     loadMessages();
                 }
 
                 input.value = '';
                 imageInput.value = '';
-            }
-        }
-
-        function sendAdminMessage() {
-            if (!currentChatUser) return;
-            const input = document.getElementById('adminChatInput');
-            const messageText = input.value.trim();
-
-            if (messageText) {
-                messages[currentChatUser].push({
-                    sender: 'admin',
-                    text: messageText,
-                    timestamp: new Date().toLocaleString(),
-                });
-                localStorage.setItem('chatMessages', JSON.stringify(messages));
-                loadMessages();
-                input.value = '';
             }
         }
 
@@ -400,150 +594,32 @@
             if (messages[currentUser]) {
                 messages[currentUser].forEach(msg => {
                     const messageDiv = document.createElement('div');
-                    messageDiv.className = `chat-message p-2 mb-2 rounded-lg ${msg.sender === currentUser ? 'bg-blue-700 ml-auto text-right' : 'bg-gray-700 mr-auto'}`;
-                    let senderHtml = `<p class="text-xs font-semibold">${msg.sender}`;
-                    if (msg.sender === 'admin') {
-                        senderHtml += `<span class="staff-tag">Staff</span>`;
+                    messageDiv.className = `chat-bubble ${msg.sender === currentUser ? 'user-bubble' : 'admin-bubble'}`;
+                    
+                    let messageContent = `
+                        <div class="flex items-center mb-1">
+                            <span class="font-semibold ${msg.sender === 'admin' ? 'text-purple-400' : 'text-blue-200'}">${msg.sender}</span>
+                            ${msg.sender === 'admin' ? '<span class="staff-tag ml-2 text-xs bg-purple-600 px-2 py-0.5 rounded">Staff</span>' : ''}
+                            <span class="text-xs text-gray-400 ml-2">${msg.timestamp}</span>
+                        </div>
+                    `;
+                    
+                    if (msg.text) {
+                        messageContent += `<p class="text-sm">${msg.text}</p>`;
                     }
-                    senderHtml += `</p>`;
-                    messageDiv.innerHTML = senderHtml + `<p class="text-xs">${msg.text}</p><small class="text-gray-400 text-[0.6rem]">${msg.timestamp}</small>`;
+                    
                     if (msg.image) {
-                        messageDiv.innerHTML += `<img src="${msg.image}" class="chat-image" />`;
+                        messageContent += `<img src="${msg.image}" class="mt-2 max-w-xs rounded-lg" />`;
                     }
+                    
+                    messageDiv.innerHTML = messageContent;
                     chatMessages.appendChild(messageDiv);
                 });
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
-
-            loadAdminMessages();
         }
 
-        function loadAdminMessages() {
-            const adminChatMessages = document.getElementById('adminChatMessages');
-            const chatList = document.getElementById('chatList');
-            const verificationList = document.getElementById('verificationList');
-            adminChatMessages.innerHTML = '';
-            chatList.innerHTML = '';
-            verificationList.innerHTML = '';
-
-            // Load chats
-            Object.keys(messages).forEach(username => {
-                const li = document.createElement('li');
-                li.className = 'p-2 text-blue-600 hover:bg-gray-700 cursor-pointer rounded flex justify-between items-center';
-                li.innerHTML = `<span onclick="selectChat('${username}')">${username}</span><button onclick="deleteChat('${username}')" class="bg-red-600 text-white px-2 py-1 rounded text-sm">Delete</button>`;
-                chatList.appendChild(li);
-            });
-
-            // Load pending verifications
-            Object.keys(verifications).forEach(username => {
-                if (verifications[username].status === 'pending') {
-                    const li = document.createElement('li');
-                    li.className = 'p-2 bg-black rounded mb-2 border border-blue-700';
-                    li.innerHTML = `<p><strong>${username}</strong></p>`;
-                    if (verifications[username].code) {
-                        li.innerHTML += `<p>Code: ${verifications[username].code}</p>`;
-                    }
-                    if (verifications[username].image) {
-                        li.innerHTML += `<img src="${verifications[username].image}" class="max-w-150" alt="Receipt" />`;
-                    }
-                    li.innerHTML += `<div class="mt-2"><button onclick="acceptVerification('${username}')" class="bg-green-600 text-white px-4 py-1 rounded mr-2">Accept</button><button onclick="denyVerification('${username}')" class="bg-red-600 text-white px-4 py-1 rounded">Deny</button></div>`;
-                    verificationList.appendChild(li);
-                }
-            });
-
-            if (currentChatUser && messages[currentChatUser]) {
-                messages[currentChatUser].forEach(msg => {
-                    const messageDiv = document.createElement('div');
-                    messageDiv.className = `chat-message p-2 mb-2 rounded-lg ${msg.sender === 'admin' ? 'bg-blue-700 ml-auto text-right' : 'bg-gray-700 mr-auto'}`;
-                    let senderHtml = `<p class="text-xs font-semibold">${msg.sender}`;
-                    if (msg.sender === 'admin') {
-                        senderHtml += `<span class="staff-tag">Staff</span>`;
-                    }
-                    senderHtml += `</p>`;
-                    messageDiv.innerHTML = senderHtml + `<p class="text-xs">${msg.text}</p><small class="text-gray-400 text-[0.6rem]">${msg.timestamp}</small>`;
-                    if (msg.image) {
-                        messageDiv.innerHTML += `<img src="${msg.image}" class="chat-image" />`;
-                    }
-                    adminChatMessages.appendChild(messageDiv);
-                });
-                adminChatMessages.scrollTop = adminChatMessages.scrollHeight;
-            }
-        }
-
-        function selectChat(username) {
-            currentChatUser = username;
-            document.querySelectorAll('#chatList li span').forEach(span => span.parentElement.classList.remove('bg-gray-700'));
-            event.target.parentElement.classList.add('bg-gray-700');
-            loadAdminMessages();
-        }
-
-        function deleteChat(username) {
-            if (confirm(`Delete chat for ${username}?`)) {
-                delete messages[username];
-                localStorage.setItem('chatMessages', JSON.stringify(messages));
-                loadAdminMessages();
-            }
-        }
-
-        function acceptVerification(username) {
-            verifications[username].status = 'accepted';
-            localStorage.setItem('verifications', JSON.stringify(verifications));
-            if (!messages[username]) {
-                messages[username] = [];
-            }
-            messages[username].push({
-                sender: 'admin',
-                text: 'Please wait 1 - 24 hours for a Staff member to give you your file',
-                timestamp: new Date().toLocaleString(),
-            });
-            localStorage.setItem('chatMessages', JSON.stringify(messages));
-            hasNewMessages = true;
-            document.getElementById('notificationDot').style.display = 'block';
-            loadAdminMessages();
-        }
-
-        function denyVerification(username) {
-            verifications[username].status = 'denied';
-            localStorage.setItem('verifications', JSON.stringify(verifications));
-            loadAdminMessages();
-        }
-
-        function closeMessages() {
-            document.getElementById('adminMessages').classList.add('hidden');
-            document.getElementById('shopSection').classList.remove('hidden');
-            hasNewMessages = false;
-            document.getElementById('notificationDot').style.display = 'none';
-        }
-
-        document.getElementById('messagesTab').addEventListener('click', () => {
-            const key = prompt('Enter admin key:');
-            if (key === 'Kakamar55') {
-                document.getElementById('authSection').classList.add('hidden');
-                document.getElementById('shopSection').classList.add('hidden');
-                document.getElementById('paymentSelector').classList.add('hidden');
-                document.getElementById('paymentSteps').classList.add('hidden');
-                document.getElementById('verificationForm').classList.add('hidden');
-                document.getElementById('waitingMessage').classList.add('hidden');
-                document.getElementById('chatSection').classList.add('hidden');
-                document.getElementById('settingsSection').classList.add('hidden');
-                document.getElementById('approvalSection').classList.add('hidden');
-                document.getElementById('adminMessages').classList.remove('hidden');
-                document.getElementById('sidebar').classList.add('hidden');
-                loadAdminMessages();
-            } else {
-                alert('Invalid key.');
-            }
-        });
-
-        document.getElementById('toggleSidebar').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.toggle('hidden');
-        });
-
-        document.getElementById('closeSidebar').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.add('hidden');
-        });
-
-        document.getElementById('settingsLink').addEventListener('click', () => {
+        function hideAllSections() {
             document.getElementById('authSection').classList.add('hidden');
             document.getElementById('shopSection').classList.add('hidden');
             document.getElementById('paymentSelector').classList.add('hidden');
@@ -551,27 +627,47 @@
             document.getElementById('verificationForm').classList.add('hidden');
             document.getElementById('waitingMessage').classList.add('hidden');
             document.getElementById('chatSection').classList.add('hidden');
-            document.getElementById('adminMessages').classList.add('hidden');
-            document.getElementById('approvalSection').classList.add('hidden');
-            document.getElementById('settingsSection').classList.remove('hidden');
-            document.getElementById('sidebar').classList.add('hidden');
-        });
-
-        document.getElementById('approvalLink').addEventListener('click', () => {
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('shopSection').classList.add('hidden');
-            document.getElementById('paymentSelector').classList.add('hidden');
-            document.getElementById('paymentSteps').classList.add('hidden');
-            document.getElementById('verificationForm').classList.add('hidden');
-            document.getElementById('waitingMessage').classList.add('hidden');
-            document.getElementById('chatSection').classList.add('hidden');
-            document.getElementById('adminMessages').classList.add('hidden');
+            document.getElementById('statusSection').classList.add('hidden');
             document.getElementById('settingsSection').classList.add('hidden');
-            document.getElementById('approvalSection').classList.remove('hidden');
-            document.getElementById('sidebar').classList.add('hidden');
-            const status = verifications[currentUser]?.status || 'Not submitted';
-            document.getElementById('approvalStatus').textContent = `Your verification status: ${status.charAt(0).toUpperCase() + status.slice(1)}`;
-        });
+        }
+
+        function showShop() {
+            hideAllSections();
+            document.getElementById('shopSection').classList.remove('hidden');
+            updateActiveNav('shopLink');
+        }
+
+        function showChat() {
+            hideAllSections();
+            document.getElementById('chatSection').classList.remove('hidden');
+            updateActiveNav('chatLink');
+            loadMessages();
+        }
+
+        function showStatus() {
+            hideAllSections();
+            document.getElementById('statusSection').classList.remove('hidden');
+            updateActiveNav('statusLink');
+            checkVerificationStatus();
+        }
+
+        function showSettings() {
+            hideAllSections();
+            document.getElementById('settingsSection').classList.remove('hidden');
+            updateActiveNav('settingsLink');
+        }
+
+        function updateActiveNav(activeId) {
+            // Remove active class from all nav items
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to clicked item
+            if (activeId) {
+                document.getElementById(activeId).classList.add('active');
+            }
+        }
     </script>
 </body>
 </html>
