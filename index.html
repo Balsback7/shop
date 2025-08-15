@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
+            background: #000000; /* Pure black background */
         }
         .chat-message {
             max-width: 75%;
@@ -25,7 +25,7 @@
             right: -4px;
             width: 10px;
             height: 10px;
-            background-color: red;
+            background-color: #e63946; /* Heavy dark neon red */
             border-radius: 50%;
         }
     </style>
@@ -33,86 +33,85 @@
 <body class="min-h-screen text-white font-sans">
     <div class="container mx-auto p-6 max-w-4xl">
         <header class="flex justify-between items-center mb-8">
-            <h1 class="text-4xl font-bold text-cyan-400">Quaryr's File Shop</h1>
+            <h1 class="text-4xl font-bold text-red-500">Quaryr's File Shop</h1>
             <div class="relative">
-                <button id="messagesTab" class="bg-cyan-500 text-black px-4 py-2 rounded-lg hover:bg-cyan-600 transition">Messages</button>
+                <button id="messagesTab" class="bg-red-500 text-black px-4 py-2 rounded-lg hover:bg-red-600 transition">Messages</button>
                 <span id="notificationDot" class="notification-dot"></span>
             </div>
         </header>
 
         <!-- Login/Signup Section -->
-        <div id="authSection" class="bg-gray-800 p-6 rounded-xl shadow-lg">
-            <h2 id="authTitle" class="text-2xl font-semibold text-cyan-300">Login</h2>
+        <div id="authSection" class="bg-gray-900 p-6 rounded-xl shadow-lg border border-red-500">
+            <h2 id="authTitle" class="text-2xl font-semibold text-red-500">Login</h2>
             <div class="mt-4">
-                <input id="username" type="text" placeholder="Username" class="p-2 bg-gray-700 text-white rounded-lg w-full mb-2">
-                <input id="email" type="email" placeholder="Email" class="p-2 bg-gray-700 text-white rounded-lg w-full mb-2">
-                <input id="password" type="password" placeholder="Password" class="p-2 bg-gray-700 text-white rounded-lg w-full mb-2">
-                <button id="authButton" onclick="handleAuth()" class="bg-cyan-500 text-black px-6 py-2 rounded-lg hover:bg-cyan-600 transition">Login</button>
-                <button id="toggleAuth" onclick="toggleAuthMode()" class="ml-2 text-cyan-400 hover:underline">Sign Up</button>
+                <input id="username" type="text" placeholder="Username" class="p-2 bg-gray-800 text-white rounded-lg w-full mb-2 border border-red-500">
+                <input id="password" type="password" placeholder="Password (6+ letters, 1+ number)" class="p-2 bg-gray-800 text-white rounded-lg w-full mb-2 border border-red-500">
+                <button id="authButton" onclick="handleAuth()" class="bg-red-500 text-black px-6 py-2 rounded-lg hover:bg-red-600 transition">Login</button>
+                <button id="toggleAuth" onclick="toggleAuthMode()" class="ml-2 text-red-500 hover:underline">Sign Up</button>
             </div>
         </div>
 
         <!-- Shop Items -->
         <div id="shopSection" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-            <div class="bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-cyan-500/50 transition">
-                <h2 class="text-2xl font-semibold text-cyan-300">Baddies Modded Kit</h2>
+            <div class="bg-gray-900 p-6 rounded-xl shadow-lg border border-red-500 hover:shadow-red-500/50 transition">
+                <h2 class="text-2xl font-semibold text-red-500">Baddies Modded Kit</h2>
                 <p class="text-gray-300 mt-2">Price: $5</p>
-                <button onclick="selectPayment('Baddies Modded Kit - $5')" class="mt-4 bg-cyan-500 text-black px-6 py-2 rounded-lg hover:bg-cyan-600 transition">Buy</button>
+                <button onclick="selectPayment('Baddies Modded Kit - $5')" class="mt-4 bg-red-500 text-black px-6 py-2 rounded-lg hover:bg-red-600 transition">Buy</button>
             </div>
-            <div class="bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-cyan-500/50 transition">
-                <h2 class="text-2xl font-semibold text-cyan-300">Fully Scripted Baddies Modded Game</h2>
+            <div class="bg-gray-900 p-6 rounded-xl shadow-lg border border-red-500 hover:shadow-red-500/50 transition">
+                <h2 class="text-2xl font-semibold text-red-500">Fully Scripted Baddies Modded Game</h2>
                 <p class="text-gray-300 mt-2">Price: $20</p>
-                <button onclick="selectPayment('Fully Scripted Baddies Modded Game - $20')" class="mt-4 bg-cyan-500 text-black px-6 py-2 rounded-lg hover:bg-cyan-600 transition">Buy</button>
+                <button onclick="selectPayment('Fully Scripted Baddies Modded Game - $20')" class="mt-4 bg-red-500 text-black px-6 py-2 rounded-lg hover:bg-red-600 transition">Buy</button>
             </div>
         </div>
 
         <!-- Payment Selector -->
-        <div id="paymentSelector" class="hidden mt-8 bg-gray-800 p-6 rounded-xl shadow-lg">
-            <h2 id="selectedItem" class="text-2xl font-semibold text-cyan-300"></h2>
+        <div id="paymentSelector" class="hidden mt-8 bg-gray-900 p-6 rounded-xl shadow-lg border border-red-500">
+            <h2 id="selectedItem" class="text-2xl font-semibold text-red-500"></h2>
             <p class="text-gray-300 mt-2">Select a payment method:</p>
-            <select id="paymentMethod" class="mt-4 p-2 bg-gray-700 text-white rounded-lg w-full">
+            <select id="paymentMethod" class="mt-4 p-2 bg-gray-800 text-white rounded-lg w-full border border-red-500">
                 <option value="">-- Choose an option --</option>
                 <option value="robux_gift">Buy with Robux (Gift)</option>
                 <option value="robux_card">Buy with Robux Gift Card</option>
                 <option value="doordash">Buy with DoorDash Gift Card</option>
                 <option value="ebay">Buy with eBay Gift Card</option>
             </select>
-            <button onclick="showSteps()" class="mt-4 bg-cyan-500 text-black px-6 py-2 rounded-lg hover:bg-cyan-600 transition">Continue</button>
+            <button onclick="showSteps()" class="mt-4 bg-red-500 text-black px-6 py-2 rounded-lg hover:bg-red-600 transition">Continue</button>
         </div>
 
         <!-- Payment Instructions -->
-        <div id="paymentSteps" class="hidden mt-8 bg-gray-800 p-6 rounded-xl shadow-lg">
-            <h2 class="text-2xl font-semibold text-cyan-300">Payment Instructions</h2>
+        <div id="paymentSteps" class="hidden mt-8 bg-gray-900 p-6 rounded-xl shadow-lg border border-red-500">
+            <h2 class="text-2xl font-semibold text-red-500">Payment Instructions</h2>
             <p class="text-gray-300 mt-2">1️⃣ Go to the site to get the gift card or gift:</p>
-            <p><a id="paymentLink" href="#" target="_blank" class="text-cyan-400 hover:underline">Click here</a></p>
+            <p><a id="paymentLink" href="#" target="_blank" class="text-red-500 hover:underline">Click here</a></p>
             <p class="text-gray-300 mt-2">2️⃣ After payment, you can access the chat below.</p>
         </div>
 
         <!-- Chat Section (Hidden until purchase) -->
-        <div id="chatSection" class="hidden mt-8 bg-gray-800 p-6 rounded-xl shadow-lg">
-            <h2 class="text-2xl font-semibold text-cyan-300">Chat with Support</h2>
-            <div id="chatMessages" class="mt-4 h-64 overflow-y-auto bg-gray-900 p-4 rounded-lg"></div>
+        <div id="chatSection" class="hidden mt-8 bg-gray-900 p-6 rounded-xl shadow-lg border border-red-500">
+            <h2 class="text-2xl font-semibold text-red-500">Chat with Support</h2>
+            <div id="chatMessages" class="mt-4 h-64 overflow-y-auto bg-gray-800 p-4 rounded-lg border border-red-500"></div>
             <div class="mt-4 flex flex-col gap-2">
-                <textarea id="chatInput" class="p-2 bg-gray-700 text-white rounded-lg w-full" placeholder="Type your message..."></textarea>
+                <textarea id="chatInput" class="p-2 bg-gray-800 text-white rounded-lg w-full border border-red-500" placeholder="Type your message..."></textarea>
                 <input type="file" id="imageInput" accept="image/*" class="text-gray-300">
-                <button onclick="sendMessage()" class="bg-cyan-500 text-black px-6 py-2 rounded-lg hover:bg-cyan-600 transition">Send</button>
+                <button onclick="sendMessage()" class="bg-red-500 text-black px-6 py-2 rounded-lg hover:bg-red-600 transition">Send</button>
             </div>
         </div>
 
         <!-- Admin Messages Section (Hidden until unlocked) -->
-        <div id="adminMessages" class="hidden mt-8 bg-gray-800 p-6 rounded-xl shadow-lg">
-            <h2 class="text-2xl font-semibold text-cyan-300">Admin Messages</h2>
+        <div id="adminMessages" class="hidden mt-8 bg-gray-900 p-6 rounded-xl shadow-lg border border-red-500">
+            <h2 class="text-2xl font-semibold text-red-500">Admin Messages</h2>
             <div class="flex mt-4">
-                <div class="w-1/3 bg-gray-900 p-4 rounded-lg mr-4 overflow-y-auto h-64">
-                    <h3 class="text-lg font-semibold text-cyan-400">Chats</h3>
+                <div class="w-1/3 bg-gray-800 p-4 rounded-lg mr-4 overflow-y-auto h-64 border border-red-500">
+                    <h3 class="text-lg font-semibold text-red-500">Chats</h3>
                     <ul id="chatList" class="mt-2"></ul>
                 </div>
                 <div class="w-2/3">
-                    <div id="adminChatMessages" class="h-64 overflow-y-auto bg-gray-900 p-4 rounded-lg"></div>
-                    <textarea id="adminChatInput" class="mt-4 p-2 bg-gray-700 text-white rounded-lg w-full" placeholder="Type your response..."></textarea>
+                    <div id="adminChatMessages" class="h-64 overflow-y-auto bg-gray-800 p-4 rounded-lg border border-red-500"></div>
+                    <textarea id="adminChatInput" class="mt-4 p-2 bg-gray-800 text-white rounded-lg w-full border border-red-500" placeholder="Type your response..."></textarea>
                     <div class="flex justify-between mt-2">
-                        <button onclick="sendAdminMessage()" class="bg-cyan-500 text-black px-6 py-2 rounded-lg hover:bg-cyan-600 transition">Send</button>
-                        <button onclick="closeMessages()" class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition">Close Messages</button>
+                        <button onclick="sendAdminMessage()" class="bg-red-500 text-black px-6 py-2 rounded-lg hover:bg-red-600 transition">Send</button>
+                        <button onclick="closeMessages()" class="bg-red-700 text-white px-6 py-2 rounded-lg hover:bg-red-800 transition">Close Messages</button>
                     </div>
                 </div>
             </div>
@@ -122,33 +121,47 @@
     <script>
         let users = JSON.parse(localStorage.getItem('users')) || {};
         let messages = JSON.parse(localStorage.getItem('chatMessages')) || {};
-        let currentUser = null;
+        let currentUser = localStorage.getItem('currentUser') || null;
         let currentChatUser = null;
         let hasNewMessages = false;
 
+        // Auto-login if credentials exist
+        if (currentUser && users[currentUser]) {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('shopSection').classList.remove('hidden');
+        }
+
         function handleAuth() {
             const username = document.getElementById('username').value.trim();
-            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value.trim();
             const isSignup = document.getElementById('authButton').textContent === 'Sign Up';
 
-            if (!username || !email || !password) {
+            if (!username || !password) {
                 alert('Please fill in all fields.');
+                return;
+            }
+
+            // Password validation: at least 6 letters and 1 number
+            const letterCount = (password.match(/[a-zA-Z]/g) || []).length;
+            const numberCount = (password.match(/[0-9]/g) || []).length;
+            if (isSignup && (letterCount < 6 || numberCount < 1)) {
+                alert('Password must contain at least 6 letters and 1 number.');
                 return;
             }
 
             if (isSignup) {
                 if (users[username]) {
-                    alert('Username already exists.');
+                    alert('Username already taken.');
                     return;
                 }
-                users[username] = { email, password };
+                users[username] = { password };
                 localStorage.setItem('users', JSON.stringify(users));
                 alert('Sign up successful! Please log in.');
                 toggleAuthMode();
             } else {
                 if (users[username] && users[username].password === password) {
                     currentUser = username;
+                    localStorage.setItem('currentUser', currentUser);
                     document.getElementById('authSection').classList.add('hidden');
                     document.getElementById('shopSection').classList.remove('hidden');
                 } else {
@@ -162,6 +175,8 @@
             document.getElementById('authTitle').textContent = isSignup ? 'Login' : 'Sign Up';
             document.getElementById('authButton').textContent = isSignup ? 'Login' : 'Sign Up';
             document.getElementById('toggleAuth').textContent = isSignup ? 'Sign Up' : 'Login';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
         }
 
         function selectPayment(item) {
@@ -271,7 +286,7 @@
             if (messages[currentUser]) {
                 messages[currentUser].forEach(msg => {
                     const messageDiv = document.createElement('div');
-                    messageDiv.className = `chat-message p-2 mb-2 rounded-lg ${msg.sender === currentUser ? 'bg-cyan-600 ml-auto text-right' : 'bg-gray-700 mr-auto'}`;
+                    messageDiv.className = `chat-message p-2 mb-2 rounded-lg ${msg.sender === currentUser ? 'bg-red-500 ml-auto text-right' : 'bg-gray-700 mr-auto'}`;
                     messageDiv.innerHTML = `<p class="text-sm font-semibold">${msg.sender}</p><p class="text-sm">${msg.text}</p><small class="text-gray-400">${msg.timestamp}</small>`;
                     if (msg.image) {
                         messageDiv.innerHTML += `<img src="${msg.image}" class="chat-image" />`;
@@ -292,7 +307,7 @@
 
             Object.keys(messages).forEach(username => {
                 const li = document.createElement('li');
-                li.className = 'p-2 text-cyan-400 hover:bg-gray-700 cursor-pointer rounded';
+                li.className = 'p-2 text-red-500 hover:bg-gray-700 cursor-pointer rounded';
                 li.textContent = username;
                 li.onclick = () => {
                     currentChatUser = username;
@@ -306,7 +321,7 @@
             if (currentChatUser && messages[currentChatUser]) {
                 messages[currentChatUser].forEach(msg => {
                     const messageDiv = document.createElement('div');
-                    messageDiv.className = `chat-message p-2 mb-2 rounded-lg ${msg.sender === 'admin' ? 'bg-cyan-600 ml-auto text-right' : 'bg-gray-700 mr-auto'}`;
+                    messageDiv.className = `chat-message p-2 mb-2 rounded-lg ${msg.sender === 'admin' ? 'bg-red-500 ml-auto text-right' : 'bg-gray-700 mr-auto'}`;
                     messageDiv.innerHTML = `<p class="text-sm font-semibold">${msg.sender}</p><p class="text-sm">${msg.text}</p><small class="text-gray-400">${msg.timestamp}</small>`;
                     if (msg.image) {
                         messageDiv.innerHTML += `<img src="${msg.image}" class="chat-image" />`;
