@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quaryr's File Shop</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         body {
             background: #0a0a0a;
@@ -33,7 +34,7 @@
             max-width: 80%;
             border-radius: 1rem;
             padding: 0.75rem 1rem;
-            font-size: 0.75rem; /* Smaller chat messages */
+            font-size: 0.75rem;
         }
         .user-bubble {
             background: #3b82f6;
@@ -66,6 +67,30 @@
             padding: 1rem;
             border-radius: 0.5rem;
             text-align: center;
+        }
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffffff;
+            color: #333333;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            padding: 0;
+            height: 40px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .google-btn:hover {
+            background-color: #f8f9fa;
+            border-color: #dadce0;
+        }
+        .google-btn img {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -190,8 +215,9 @@
                     <p class="text-gray-400">Sign in to access your account</p>
                 </div>
                 <div class="space-y-4">
-                    <button id="gmailLogin" class="w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-                        Sign in with Gmail
+                    <button id="gmailLogin" class="google-btn w-full">
+                        <img src="https://www.google.com/favicon.ico" alt="Google Logo">
+                        Sign in with Google
                     </button>
                     <div class="text-center text-gray-400 text-sm">or</div>
                     <div>
@@ -201,6 +227,10 @@
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-300 mb-1">Password</label>
                         <input id="password" type="password" placeholder="Enter your password (6+ letters, 1+ number)" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-300 mb-1">Gmail Address</label>
+                        <input id="email" type="email" placeholder="Enter your Gmail address" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                     <div id="captchaSection" class="captcha-container hidden">
                         <p class="text-gray-300 mb-2">Solve CAPTCHA: What is 5 + 3?</p>
@@ -229,10 +259,6 @@
                 </div>
                 <div class="space-y-4">
                     <div>
-                        <label for="email" class="block text-sm font-medium text-gray-300 mb-1">Gmail Address</label>
-                        <input id="email" type="email" placeholder="Enter your Gmail address" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    </div>
-                    <div>
                         <label for="verificationCode" class="block text-sm font-medium text-gray-300 mb-1">Verification Code</label>
                         <input id="verificationCode" type="text" placeholder="Enter 6-digit code" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
@@ -246,7 +272,7 @@
             <div id="shopSection" class="hidden max-w-4xl mx-auto p-6">
                 <h1 class="text-3xl font-bold gradient-text mb-8">Available Products</h1>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition-colors">
+                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-600 hover:border-blue-500 transition-colors">
                         <h2 class="text-xl font-semibold text-white mb-2">Baddies Modded Kit</h2>
                         <p class="text-gray-400 mb-4">Includes all the essential mods for your game</p>
                         <div class="flex items-center justify-between">
@@ -256,7 +282,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition-colors">
+                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-600 hover:border-blue-500 transition-colors">
                         <h2 class="text-xl font-semibold text-white mb-2">Fully Scripted Baddies Modded Game</h2>
                         <p class="text-gray-400 mb-4">Complete game with all scripts included</p>
                         <div class="flex items-center justify-between">
@@ -393,12 +419,10 @@
             <div id="adminPanel" class="hidden max-w-6xl mx-auto p-6 mt-8">
                 <h1 class="text-3xl font-bold gradient-text mb-8">Admin Panel</h1>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Verifications Section -->
                     <div class="bg-gray-800 rounded-xl p-6">
                         <h2 class="text-xl font-semibold text-white mb-4">Pending Verifications</h2>
                         <div id="verificationsList" class="space-y-4 max-h-96 overflow-y-auto"></div>
                     </div>
-                    <!-- Chat Management Section -->
                     <div class="bg-gray-800 rounded-xl p-6">
                         <h2 class="text-xl font-semibold text-white mb-4">Chat Management</h2>
                         <div class="flex">
@@ -433,8 +457,9 @@
         let currentChatUser = null;
         let isAdmin = false;
         const ADMIN_PASSWORD = "Kakamar55";
-        const CAPTCHA_ANSWER = "8"; // For 5 + 3
+        const CAPTCHA_ANSWER = "8";
         let gmailVerificationCode = null;
+        const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID'; // Replace with actual client ID for production
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
@@ -455,8 +480,10 @@
             document.getElementById('closeMobileMenu').addEventListener('click', function() {
                 document.getElementById('mobileSidebar').classList.add('-translate-x-full');
             });
-            document.getElementById('gmailLogin').addEventListener('click', initiateGmailLogin);
             document.getElementById('staffLogin').addEventListener('click', showStaffLogin);
+
+            // Initialize Google Sign-In
+            document.getElementById('gmailLogin').addEventListener('click', initiateGmailLogin);
 
             // Auto-login if credentials exist
             if (currentUser && users[currentUser]) {
@@ -473,28 +500,29 @@
         });
 
         function initiateGmailLogin() {
+            const email = document.getElementById('email').value.trim();
+            if (!email || !email.endsWith('@gmail.com')) {
+                alert('Please enter a valid Gmail address in the Gmail Address field.');
+                return;
+            }
+            // Simulate Google Sign-In and email verification code sending
+            gmailVerificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+            console.log(`Verification code sent to ${email}: ${gmailVerificationCode}`); // For demo
+            alert(`A 6-digit verification code has been sent to ${email} from ageplayerr@gmail.com. Please check your inbox (simulated for demo).`);
             hideAllSections();
             document.getElementById('gmailVerificationSection').classList.remove('hidden');
-            // Simulate sending a verification code from ageplayerr@gmail.com
-            gmailVerificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-            console.log(`Verification code sent to Gmail: ${gmailVerificationCode}`); // For demo purposes
-            alert('A 6-digit verification code has been sent to your Gmail from ageplayerr@gmail.com. Please check your inbox (simulated for demo).');
         }
 
         function verifyGmailCode() {
-            const email = document.getElementById('email').value.trim();
             const code = document.getElementById('verificationCode').value.trim();
-            if (!email || !code) {
-                alert('Please enter both Gmail address and verification code.');
-                return;
-            }
-            if (!email.endsWith('@gmail.com')) {
-                alert('Please enter a valid Gmail address.');
+            if (!code) {
+                alert('Please enter the verification code.');
                 return;
             }
             if (code === gmailVerificationCode) {
+                const email = document.getElementById('email').value.trim();
                 currentUser = email.split('@')[0];
-                users[currentUser] = { password: '', isGmail: true };
+                users[currentUser] = { password: '', isGmail: true, email };
                 localStorage.setItem('users', JSON.stringify(users));
                 localStorage.setItem('currentUser', currentUser);
                 hideAllSections();
@@ -524,15 +552,21 @@
         function handleAuth() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
+            const email = document.getElementById('email').value.trim();
             const captchaInput = document.getElementById('captchaInput').value.trim();
             const isSignup = document.getElementById('authButton').textContent === 'Sign Up';
 
-            if (!username || !password) {
-                alert('Please fill in all fields.');
+            if (!username || !password || !email) {
+                alert('Please fill in all fields (username, password, and Gmail address).');
                 return;
             }
 
-            // Password validation: at least 6 letters and 1 number
+            if (!email.endsWith('@gmail.com')) {
+                alert('Please enter a valid Gmail address.');
+                return;
+            }
+
+            // Password validation
             const letterCount = (password.match(/[a-zA-Z]/g) || []).length;
             const numberCount = (password.match(/[0-9]/g) || []).length;
             if (isSignup && (letterCount < 6 || numberCount < 1)) {
@@ -551,17 +585,22 @@
                 return;
             }
 
+            // Send verification code
+            gmailVerificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+            console.log(`Verification code sent to ${email}: ${gmailVerificationCode}`); // For demo
+            alert(`A 6-digit verification code has been sent to ${email} from ageplayerr@gmail.com. Please check your inbox (simulated for demo).`);
+            hideAllSections();
+            document.getElementById('gmailVerificationSection').classList.remove('hidden');
+
             if (isSignup) {
                 if (users[username]) {
                     alert('Username already taken.');
                     return;
                 }
-                users[username] = { password, isAdmin: password === ADMIN_PASSWORD };
+                users[username] = { password, email, isAdmin: password === ADMIN_PASSWORD };
                 localStorage.setItem('users', JSON.stringify(users));
-                alert('Sign up successful! Please log in.');
-                toggleAuthMode();
             } else {
-                if (users[username] && users[username].password === password) {
+                if (users[username] && users[username].password === password && users[username].email === email) {
                     currentUser = username;
                     localStorage.setItem('currentUser', currentUser);
                     if (users[username].isAdmin) {
@@ -569,12 +608,8 @@
                         document.getElementById('adminLink').classList.remove('hidden');
                         document.getElementById('mobileAdminLink').classList.remove('hidden');
                     }
-                    hideAllSections();
-                    document.getElementById('shopSection').classList.remove('hidden');
-                    document.getElementById('settingsUsername').value = currentUser;
-                    checkVerificationStatus();
                 } else {
-                    alert('Invalid username or password.');
+                    alert('Invalid username, password, or Gmail address.');
                 }
             }
         }
@@ -586,6 +621,7 @@
             document.getElementById('toggleAuth').textContent = isSignup ? 'Sign In' : 'Sign Up';
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
+            document.getElementById('email').value = '';
             document.getElementById('captchaInput').value = '';
             document.getElementById('captchaSection').classList.add('hidden');
         }
